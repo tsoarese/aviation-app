@@ -1,0 +1,7 @@
+{
+  "/servicios-smartpos/*": {
+      "target": "https://db8e84c4-internet-becabffc-303c-967077037.us-east-1.elb.amazonaws.com",
+      "secure": false,
+      "logLevel": "debug"
+  }
+}

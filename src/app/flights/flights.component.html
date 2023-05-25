@@ -1,0 +1,177 @@
+<div class="card m-3">
+  <h3 class="card-header text-center">Searching flights</h3>  
+  <div class="card-body">
+    <form class="row g-3">
+      <div class="col-auto">
+        <div class="ng-autocomplete">
+          <ng-autocomplete
+            [data]="airports"
+            [searchKeyword]="keyword"
+            placeholder="Enter the Airport Name"
+            (selected)='selectEvent($event)'
+            (inputChanged)='onChangeSearch($event)'
+            (inputFocused)='onFocused($event)'
+            (inputCleared)='onCleared($event)'
+            [itemTemplate]="itemTemplate"
+            [notFoundTemplate]="notFoundTemplate">
+          </ng-autocomplete>
+        
+          <ng-template #itemTemplate let-item>
+            <a [innerHTML]="item.desc_item"></a>
+          </ng-template>
+        
+          <ng-template #notFoundTemplate let-notFound>
+            <div [innerHTML]="notFound"></div>
+          </ng-template>
+        </div>
+      </div>
+      <div class="col-auto">
+        or
+      </div>
+      <div class="col-auto">
+        <input type="text" class="form-control" placeholder="IATA code" [formControl]="iataControl" maxlength="3" size="20">
+      </div>
+      <div class="col-auto">
+        <button (click)="searchFlights(1)" type="button" class="btn btn-primary mb-3">Search flights</button>
+      </div>
+    </form>
+  </div>
+</div>
+<div class="row g-3" style="margin-left: 16px;">
+  <div class="col-auto">
+    <button (click)="setType(1, 'ARRIVALS')" type="button" class="btn btn-secondary" *ngIf="isDepartures">Check Arrivals</button>
+    <button type="button" class="btn btn-success" *ngIf="isArrivals">Arrivals</button>
+  </div>
+  <div class="col-auto">
+    <button (click)="setType(1, 'DEPARTURES')" type="button" class="btn btn-secondary" *ngIf="isArrivals"> Check Departures</button>
+    <button type="button" class="btn btn-success" *ngIf="isDepartures">Departures</button>        
+  </div>
+  <div class="col-auto">
+  </div>
+  <div class="col-auto">
+  </div>
+</div>
+<div class="card m-3" *ngIf="isArrivals">
+  <div class="card-body">
+      <table class="table table-striped table-sm">
+          <thead>
+            <tr>
+              <th colspan="6">{{airportNameSel}} - Arrivals</th>
+              <th></th>
+              </tr>
+              <tr>
+                <th>Arrives on</th>
+                <th>Flight</th>
+                <th>Status</th>
+                <th>Terminal</th>
+                <th>Gate</th>
+                <th>Arriving from</th>
+                <th>Estimated arrival</th>
+              </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let item of flights">
+              <td>{{item.arrival.scheduled | date:'yyyy-MM-dd HH:mm'}}</td>
+              <td>{{item.flight.number}}</td>
+              <td>{{item.flight_status}}</td>
+              <td>{{item.arrival.terminal}}</td>
+              <td>{{item.arrival.gate}}</td>
+              <td>{{item.departure.airport}}</td>
+              <td>{{item.arrival.estimated | date:'yyyy-MM-dd HH:mm'}}</td>
+            </tr>
+         </tbody>
+      </table>
+  </div>
+  <div class="card-footer text-center pb-0 pt-3">
+    <div *ngIf="totalFlights>0 && pager && pager.pages?.length">
+      {{pager.currentPage}} of {{pager.totalPages}}
+      <ul  class="pagination justify-content-center">
+          <li [ngClass]="{ disabled: pager.currentPage === 1 }" class="page-item">
+              <a (click)="searchFlights(1)" class="page-link">First</a>
+          </li>
+          <li [ngClass]="{ disabled: pager.currentPage === 1 }" class="page-item">
+              <a (click)="searchFlights(pager.currentPage - 1)" class="page-link">Previous</a>
+          </li>
+          <li *ngFor="let page of pager.pages" [ngClass]="{ active: pager.currentPage === page }" class="page-item">
+              <a (click)="searchFlights(page)" class="page-link">{{page}}</a>
+          </li>
+          <li [ngClass]="{ disabled: pager.currentPage === pager.totalPages }" class="page-item">
+              <a (click)="searchFlights(pager.currentPage + 1)" class="page-link">Next</a>
+          </li>
+          <li [ngClass]="{ disabled: pager.currentPage === pager.totalPages }" class="page-item">
+              <a (click)="searchFlights(pager.totalPages)" class="page-link">Last</a>
+          </li>
+      </ul>
+      </div>    
+  </div>
+</div>
+<div class="card m-3" *ngIf="isDepartures">
+  <div class="card-body">
+    <table class="table table-striped table-sm">
+        <thead>
+          <tr>
+            <th colspan="6">{{airportNameSel}} - Departures</th>
+            <th></th>
+          </tr>
+          <tr>
+            <th>Departures on</th>
+            <th>Flight</th>
+            <th>Status</th>
+            <th>Terminal</th>
+            <th>Gate</th>
+            <th>Arriving at</th>
+            <th>Estimated arrival</th>
+          </tr>
+       </thead>
+       <tbody>
+          <tr *ngFor="let item of flights">
+            <td>{{item.departure.scheduled | date:'yyyy-MM-dd HH:mm'}}</td>
+            <td>{{item.flight.number}}</td>
+            <td>{{item.flight_status}}</td>
+            <td>{{item.departure.terminal}}</td>
+            <td>{{item.departure.gate}}</td>
+            <td>{{item.arrival.airport}}</td>
+            <td>{{item.arrival.estimated | date:'yyyy-MM-dd HH:mm'}}</td>
+         </tr>
+        </tbody>
+    </table>
+  </div>
+  <div class="card-footer text-center pb-0 pt-3">
+    <div *ngIf="totalFlights>0 && pager && pager.pages?.length">
+      {{pager.currentPage}} of {{pager.totalPages}}
+      <ul  class="pagination justify-content-center">
+          <li [ngClass]="{ disabled: pager.currentPage === 1 }" class="page-item">
+              <a (click)="searchFlights(1)" class="page-link">First</a>
+          </li>
+          <li [ngClass]="{ disabled: pager.currentPage === 1 }" class="page-item">
+              <a (click)="searchFlights(pager.currentPage - 1)" class="page-link">Previous</a>
+          </li>
+          <li *ngFor="let page of pager.pages" [ngClass]="{ active: pager.currentPage === page }" class="page-item">
+              <a (click)="searchFlights(page)" class="page-link">{{page}}</a>
+          </li>
+          <li [ngClass]="{ disabled: pager.currentPage === pager.totalPages }" class="page-item">
+              <a (click)="searchFlights(pager.currentPage + 1)" class="page-link">Next</a>
+          </li>
+          <li [ngClass]="{ disabled: pager.currentPage === pager.totalPages }" class="page-item">
+              <a (click)="searchFlights(pager.totalPages)" class="page-link">Last</a>
+          </li>
+      </ul>
+      </div>    
+  </div>
+</div>
+<div class="card m-3" *ngIf="isIataNotFount">
+  <div class="card-body">
+    <div class="alert alert-info" role="alert">
+      Code IATA not found in list Airports
+    </div>
+  </div>
+</div>  
+<div class="card m-3" *ngIf="isLoad">
+  <div class="card-body">
+    <div class="d-flex justify-content-center">
+      <div class="spinner-border" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+</div>

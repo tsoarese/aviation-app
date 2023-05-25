@@ -1,5 +1,8 @@
 {
   "$schema": "./node_modules/@angular/cli/lib/config/schema.json",
+  "cli": {
+    "analytics": "52af95a9-f9f8-4890-acff-632d4aabb750"
+  },
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
@@ -68,10 +71,12 @@
           "builder": "@angular-devkit/build-angular:dev-server",
           "configurations": {
             "production": {
-              "browserTarget": "aviation-app:build:production"
+              "browserTarget": "aviation-app:build:production",
+              "proxyConfig": "src/proxy.conf.json"
             },
             "development": {
-              "browserTarget": "aviation-app:build:development"
+              "browserTarget": "aviation-app:build:development",
+              "proxyConfig": "src/proxy.conf.json"
             }
           },
           "defaultConfiguration": "development"

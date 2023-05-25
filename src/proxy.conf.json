@@ -1,0 +1,8 @@
+{
+  "/v1": {
+      "target": "http://api.aviationstack.com",
+      "secure": false,
+      "changeOrigin":true,
+      "logLevel": "debug"
+  }
+}
